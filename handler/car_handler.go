@@ -37,7 +37,12 @@ func (h *carHandler) GetCarsById(c *gin.Context) {
 	stringId := c.Param("id")
 	id, _ := strconv.Atoi(stringId)
 	car, err := h.carService.FindById(id)
-	helper.Error(err)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": http.StatusOK,
