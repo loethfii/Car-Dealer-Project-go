@@ -39,7 +39,7 @@ func (h *carHandler) GetCarsById(c *gin.Context) {
 	car, err := h.carService.FindById(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
+			"message": "Data tidak ditemukan.",
 		})
 		return
 	}
