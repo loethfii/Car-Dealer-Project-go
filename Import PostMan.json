@@ -1,0 +1,346 @@
+{
+	"info": {
+		"_postman_id": "165ad718-bc15-42e9-80d4-3d2778e3a011",
+		"name": "Tugas Akhir Gin",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19886330"
+	},
+	"item": [
+		{
+			"name": "Tugas Akhir Gin Copy",
+			"item": [
+				{
+					"name": "Cars",
+					"item": [
+						{
+							"name": "GET ALL Cars",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/cars",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"cars"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Cars Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/cars/9",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"cars",
+										"9"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post car",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n            \"nama_mobil\": \"Kardilax\",\r\n            \"tipe_mobil\": \"A\",\r\n            \"jenis_mobil\": \"Sedan\",\r\n            \"bahan_bakar\": \"Bensin\",\r\n            \"isi_Silinder\": \"1300 CC\",\r\n            \"warna\": \"Putih\",\r\n            \"transmisi\": \"Manual\",\r\n            \"harga\": 76000000,\r\n            \"qty\": 0\r\n        }"
+								},
+								"url": {
+									"raw": "localhost:8080/cars/post",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"cars",
+										"post"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Cars",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n        \"nama_mobil\": \"Avanza 2005\",\r\n        \"tipe_mobil\": \"G\",\r\n        \"jenis_mobil\": \"MPV\",\r\n        \"bahan_bakar\": \"Bensin\",\r\n        \"isi_Silinder\": \"1500 CC\",\r\n        \"warna\": \"Putih\",\r\n        \"transmisi\": \"Manual\",\r\n        \"harga\": 78000000,\r\n        \"qty\": 4\r\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/cars/put/6",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"cars",
+										"put",
+										"6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New Request",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/cars/delete/5",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"cars",
+										"delete",
+										"5"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Sales",
+					"item": [
+						{
+							"name": "GET ALL SALES",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/sales",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"sales"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET ALL SALES BY ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/sales/3",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"sales",
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST SALES",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nama_sales\" : \"Miftah el wira\",\r\n    \"nip\" : \"9927774884\", \r\n    \"nomer_telpon\" : \"07997788277\", \r\n    \"bagian\" : \"Manager Sales\"\r\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/sales/post",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"sales",
+										"post"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Put Sales People",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nama_sales\": \"Nanang Nur Hidayat Sutarno\",\r\n    \"nip\": \"9927774884\",\r\n    \"nomer_telpon\": \"07997788277\",\r\n    \"bagian\": \"Manager Sales\"\r\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/sales/put/2",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"sales",
+										"put",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE SalesPeople",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/sales/delete/2",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"sales",
+										"delete",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Purchase Form",
+					"item": [
+						{
+							"name": "Get All Purchase FOrm",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/purchase-forms",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"purchase-forms"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Purchase By ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/purchase-forms/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"purchase-forms",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Purchase FOrm Copy",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nama_lengkap_pembeli\": \"Jajang Suprapto\",\r\n  \"nomer_ktp\": \"1234567890\",\r\n  \"alamat_rumah\": \"Jl. Contoh No. 123\",\r\n  \"nomer_debit\": \"1234 5678 9012 3456\",\r\n  \"car_id\": 22222,\r\n  \"harus_inden\": false,\r\n  \"lama_inden\": \"2 Bulan\",\r\n  \"custom_plat\": \"\",\r\n  \"tambahan_kit\": \"Spoiler\",\r\n  \"id_sales\": 100,\r\n  \"id_sales_people\": 2,\r\n  \"sales_people_id\": 3\r\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/purchase-forms/post",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"purchase-forms",
+										"post"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update purchaseForm",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nama_lengkap_pembeli\": \"John Martin\",\r\n    \"nomer_ktp\": \"1234567890\",\r\n    \"alamat_rumah\": \"Jl. Contoh No. 123\",\r\n    \"nomer_debit\": \"1234 5678 9012 3456\",\r\n    \"car_id\": 9,\r\n    \"harus_inden\": false,\r\n    \"lama_inden\": \"\",\r\n    \"custom_plat\": \"\",\r\n    \"tambahan_kit\": \"Spoiler\",\r\n    \"sales_people_id\": 3\r\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/purchase-forms/put/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"purchase-forms",
+										"put",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update purchaseForm Copy",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nama_lengkap_pembeli\": \"John Martin\",\r\n    \"nomer_ktp\": \"1234567890\",\r\n    \"alamat_rumah\": \"Jl. Contoh No. 123\",\r\n    \"nomer_debit\": \"1234 5678 9012 3456\",\r\n    \"car_id\": 9,\r\n    \"harus_inden\": false,\r\n    \"lama_inden\": \"\",\r\n    \"custom_plat\": \"\",\r\n    \"tambahan_kit\": \"Spoiler\",\r\n    \"sales_people_id\": 3\r\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/purchase-forms/delete/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"purchase-forms",
+										"delete",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
