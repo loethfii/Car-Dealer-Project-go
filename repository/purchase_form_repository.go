@@ -7,7 +7,7 @@ import (
 )
 
 type PurchaseFormRepository interface {
-	FindAll() ([]models.PurchaseForm, error)
+	FindAll() ([]models.PurchaseForm, int, error)
 	FindById(id int) (models.PurchaseForm, error)
 	Create(purchaseForm models.PurchaseForm, id int, isInden bool) (models.PurchaseForm, error)
 	Update(id int, updatePurchaseForm models.PurchaseFormRequest) (models.PurchaseFormRequest, error)
@@ -22,12 +22,18 @@ func NewPurchaseFormRepository(db *gorm.DB) *purchaseFormRepository {
 	return &purchaseFormRepository{db}
 }
 
-func (r *purchaseFormRepository) FindAll() ([]models.PurchaseForm, error) {
-	var purchaseForm []models.PurchaseForm
+func (r *purchaseFormRepository) FindAll() ([]models.PurchaseForm, int, error) {
+	var purchaseForms []models.PurchaseForm
 
-	err := r.db.Order("id desc").Find(&purchaseForm).Error
+	err := r.db.Order("id desc").Find(&purchaseForms).Error
 
-	return purchaseForm, err
+	var carId int
+
+	for _, each := range purchaseForms {
+		carId = each.CarId
+	}
+
+	return purchaseForms, carId, err
 }
 
 func (r *purchaseFormRepository) FindById(id int) (models.PurchaseForm, error) {

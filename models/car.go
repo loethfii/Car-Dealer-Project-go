@@ -5,7 +5,7 @@ import "gorm.io/gorm"
 type Car struct {
 	gorm.Model
 	Id            int            `gorm:"column:id;type: int; autoIncrement" json:"id"`
-	NamaMobil     string         `gorm:"column:nama_mobil;type: varchar(100); " json:"nama_mobil"`
+	NamaMobil     string         `gorm:"column:nama_mobil;type: varchar(100);not null;" json:"nama_mobil"`
 	TipeMobil     string         `gorm:"column:tipe_mobil;type: varchar(100); " json:"tipe_mobil"`
 	JenisMobil    string         `gorm:"column:jenis_mobil;type: varchar(100); " json:"jenis_mobil"`
 	BahanBakar    string         `gorm:"column:bahan_bakar;type: varchar(100); " json:"bahan_bakar"`
@@ -32,13 +32,13 @@ type CarResponse struct {
 }
 
 type CarRequest struct {
-	NamaMobil    string `json:"nama_mobil"`
-	TipeMobil    string `json:"tipe_mobil"`
-	JenisMobil   string `json:"jenis_mobil"`
-	BahanBakar   string `json:"bahan_bakar"`
-	Isi_Silinder string `json:"isi_Silinder"`
-	Warna        string `json:"warna"`
-	Transmisi    string `json:"transmisi"`
-	Harga        uint32 `json:"harga"`
-	Qty          uint32 `json:"qty"`
+	NamaMobil    string `json:"nama_mobil" binding:"required"`
+	TipeMobil    string `json:"tipe_mobil" binding:"required"`
+	JenisMobil   string `json:"jenis_mobil" binding:"required"`
+	BahanBakar   string `json:"bahan_bakar" binding:"required"`
+	Isi_Silinder string `json:"isi_Silinder" binding:"required"`
+	Warna        string `json:"warna" binding:"required"`
+	Transmisi    string `json:"transmisi" binding:"required"`
+	Harga        uint32 `json:"harga" binding:"required"`
+	Qty          uint32 `json:"qty" binding:"required"`
 }

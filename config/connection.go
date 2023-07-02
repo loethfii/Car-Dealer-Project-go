@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
@@ -9,7 +10,18 @@ import (
 )
 
 func InitDB() (*gorm.DB, error) {
-	config := fmt.Sprintf("root:root@tcp(127.0.0.1:3306)/dealer_mobil_gorm?charset=utf8mb4&parseTime=True&loc=Local")
+	viper.SetConfigFile(".env")
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Fatalf("Gagal membaca file konfigurasi: %v", err)
+	}
+
+	dbUser := viper.GetString("DB_USER")
+	dbPassword := viper.GetString("DB_PASSWORD")
+	dbHost := viper.GetString("DB_HOST")
+	dbName := viper.GetString("DB_NAME")
+
+	config := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbUser, dbPassword, dbHost, dbName)
 	dsn := config
 	DB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
@@ -22,6 +34,7 @@ func InitDB() (*gorm.DB, error) {
 	DB.AutoMigrate(&models.Car{})
 	DB.AutoMigrate(&models.SalesPeople{})
 	DB.AutoMigrate(&models.PurchaseForm{})
+	DB.AutoMigrate(&models.Payment{})
 
 	return DB, err
 }

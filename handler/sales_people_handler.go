@@ -1,8 +1,8 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"strconv"
 	"tugas_akhir_course_net/helper"
 	"tugas_akhir_course_net/models"
@@ -27,22 +27,25 @@ func (h *salesPeopleHandler) GetSalesPeople(c *gin.Context) {
 		newSalesPeople = append(newSalesPeople, data)
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status": http.StatusOK,
-		"data":   newSalesPeople,
-	})
+	length := len(newSalesPeople)
+
+	message := fmt.Sprintf("%d data ditemukan", length)
+
+	helper.StatusOk(c, newSalesPeople, message)
 }
 
 func (h *salesPeopleHandler) GetSalesPeopleById(c *gin.Context) {
 	stringId := c.Param("id")
 	id, _ := strconv.Atoi(stringId)
 	salesPeople, err := h.salesPeopleService.FindById(id)
-	helper.Error(err)
+	if err != nil {
+		helper.StatusNotFound(c, "Data tidak ditemukan")
+		return
+	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status": http.StatusOK,
-		"data":   helper.ConvertToResponseSalesPeople(salesPeople),
-	})
+	message := fmt.Sprintf("Data ditemukan")
+
+	helper.StatusOk(c, helper.ConvertToResponseSalesPeople(salesPeople), message)
 }
 
 func (h *salesPeopleHandler) PostSalesPeople(c *gin.Context) {
@@ -51,20 +54,17 @@ func (h *salesPeopleHandler) PostSalesPeople(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&newSalesPeople)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		helper.StatusBadRequest(c, err.Error())
 		return
 	}
 
 	salesPeople, err := h.salesPeopleService.Create(newSalesPeople)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		helper.StatusBadRequest(c, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status": http.StatusOK,
-		"data":   helper.ConvertToResponseSalesPeople(salesPeople),
-	})
+	helper.StatusCreated(c, helper.ConvertToResponseSalesPeople(salesPeople), "Data berhasil ditambahkan")
 }
 
 func (h *salesPeopleHandler) PutSalesPeople(c *gin.Context) {
@@ -75,20 +75,17 @@ func (h *salesPeopleHandler) PutSalesPeople(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&newSalesPeople)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		helper.StatusBadRequest(c, err.Error())
 		return
 	}
 
 	salesPople, err := h.salesPeopleService.Update(id, newSalesPeople)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		helper.StatusServalInternalError(c, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status": http.StatusOK,
-		"data":   salesPople,
-	})
+	helper.StatusOk(c, salesPople, "Berhasil update")
 }
 
 func (h *salesPeopleHandler) DeleteSalesPeople(c *gin.Context) {
@@ -97,29 +94,9 @@ func (h *salesPeopleHandler) DeleteSalesPeople(c *gin.Context) {
 
 	salesPeople, err := h.salesPeopleService.Delete(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		helper.StatusBadRequest(c, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status": http.StatusOK,
-		"data":   helper.ConvertToResponseSalesPeople(salesPeople),
-	})
-}
-
-func (h *carHandler) D(c *gin.Context) {
-
-	stringId := c.Param("id")
-	id, _ := strconv.Atoi(stringId)
-
-	car, err := h.carService.Delete(id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"status": http.StatusOK,
-		"data":   helper.ConvertToResponseCar(car),
-	})
+	helper.StatusOk(c, helper.ConvertToResponseSalesPeople(salesPeople), "Data Berhasil dihapus.")
 }

@@ -6,7 +6,7 @@ import (
 )
 
 type PurchaseFormService interface {
-	FindAll() ([]models.PurchaseForm, error)
+	FindAll() ([]models.PurchaseForm, int, error)
 	FindById(id int) (models.PurchaseForm, error)
 	Create(car models.PurchaseFormRequest) (models.PurchaseForm, error)
 	Update(id int, updateCar models.PurchaseFormRequest) (models.PurchaseFormRequest, error)
@@ -21,9 +21,9 @@ func NewPurchaseFormService(purchaseFormRepository repository.PurchaseFormReposi
 	return &purchaseFormService{purchaseFormRepository}
 }
 
-func (s *purchaseFormService) FindAll() ([]models.PurchaseForm, error) {
-	purchaseForms, err := s.purchaseFormRepository.FindAll()
-	return purchaseForms, err
+func (s *purchaseFormService) FindAll() ([]models.PurchaseForm, int, error) {
+	purchaseForms, carId, err := s.purchaseFormRepository.FindAll()
+	return purchaseForms, carId, err
 }
 
 func (s *purchaseFormService) FindById(id int) (models.PurchaseForm, error) {

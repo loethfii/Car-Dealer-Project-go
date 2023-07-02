@@ -1,8 +1,8 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"strconv"
 	"tugas_akhir_course_net/helper"
 	"tugas_akhir_course_net/models"
@@ -19,7 +19,10 @@ func NewCarHandler(carService service.CarService) *carHandler {
 
 func (h *carHandler) GetCars(c *gin.Context) {
 	cars, err := h.carService.FindAll()
-	helper.Error(err)
+	if err != nil {
+		helper.StatusServalInternalError(c, "Terjadi kesalahan internal server.")
+		return
+	}
 	newCars := []models.CarResponse{}
 	for _, val := range cars {
 		data := helper.ConvertToResponseCar(val)
@@ -27,10 +30,11 @@ func (h *carHandler) GetCars(c *gin.Context) {
 		newCars = append(newCars, data)
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status": http.StatusOK,
-		"data":   newCars,
-	})
+	length := len(newCars)
+
+	message := fmt.Sprintf("%d data ditemukan", length)
+
+	helper.StatusOk(c, newCars, message)
 }
 
 func (h *carHandler) GetCarsById(c *gin.Context) {
@@ -38,16 +42,13 @@ func (h *carHandler) GetCarsById(c *gin.Context) {
 	id, _ := strconv.Atoi(stringId)
 	car, err := h.carService.FindById(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Data tidak ditemukan.",
-		})
+		helper.StatusNotFound(c, "Data tidak ditemukan")
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status": http.StatusOK,
-		"data":   helper.ConvertToResponseCar(car),
-	})
+	message := fmt.Sprintf("Data ditemukan")
+
+	helper.StatusOk(c, helper.ConvertToResponseCar(car), message)
 }
 
 func (h *carHandler) PostCars(c *gin.Context) {
@@ -56,20 +57,17 @@ func (h *carHandler) PostCars(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&newCar)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		helper.StatusBadRequest(c, err.Error())
 		return
 	}
 
 	car, err := h.carService.Create(newCar)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		helper.StatusBadRequest(c, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status": http.StatusOK,
-		"data":   helper.ConvertToResponseCar(car),
-	})
+	helper.StatusCreated(c, helper.ConvertToRequestCar(car), "Data berhasil ditambahkan")
 }
 
 func (h *carHandler) PutCars(c *gin.Context) {
@@ -81,20 +79,17 @@ func (h *carHandler) PutCars(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&newCar)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		helper.StatusBadRequest(c, err.Error())
 		return
 	}
 
 	car, err := h.carService.Update(id, newCar)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		helper.StatusServalInternalError(c, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status": http.StatusOK,
-		"data":   car,
-	})
+	helper.StatusOk(c, car, "Berhasil update")
 }
 
 func (h *carHandler) DeleteCars(c *gin.Context) {
@@ -104,12 +99,9 @@ func (h *carHandler) DeleteCars(c *gin.Context) {
 
 	car, err := h.carService.Delete(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		helper.StatusBadRequest(c, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status": http.StatusOK,
-		"data":   helper.ConvertToResponseCar(car),
-	})
+	helper.StatusOk(c, helper.ConvertToResponseCar(car), "Data Berhasil dihapus.")
 }
