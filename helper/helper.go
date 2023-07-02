@@ -48,6 +48,22 @@ func ConvertToResponseCar(car models.Car) models.CarResponse {
 	return resCar
 }
 
+func ConvertToRequestCar(car models.Car) models.CarRequest {
+	var resCar = models.CarRequest{
+		NamaMobil:    car.NamaMobil,
+		TipeMobil:    car.TipeMobil,
+		JenisMobil:   car.JenisMobil,
+		BahanBakar:   car.BahanBakar,
+		Isi_Silinder: car.Isi_Silinder,
+		Warna:        car.Warna,
+		Transmisi:    car.Transmisi,
+		Harga:        car.Harga,
+		Qty:          car.Qty,
+	}
+
+	return resCar
+}
+
 func ConvertToResponseSalesPeople(salesPeople models.SalesPeople) models.SalesPeopleResponse {
 	var purchaseFormResponses []models.PurchaseFormResponse
 
@@ -97,4 +113,65 @@ func ConvertToReponsePurchaseForm(purchaseForm models.PurchaseForm) models.Purch
 	}
 
 	return resPurchaseForm
+}
+
+func ConvertToResponseAndInnerJoin(purchaseForm models.PurchaseForm, car models.Car, salesPeople models.SalesPeople) models.PurchaseFormInnerJoinResponse {
+	var carRequest = models.CarRequest{
+		NamaMobil:    car.NamaMobil,
+		TipeMobil:    car.TipeMobil,
+		JenisMobil:   car.JenisMobil,
+		BahanBakar:   car.BahanBakar,
+		Isi_Silinder: car.Isi_Silinder,
+		Warna:        car.Warna,
+		Transmisi:    car.Transmisi,
+		Harga:        car.Harga,
+		Qty:          car.Qty,
+	}
+
+	var salesPeopleRequest = models.SalesPeopleRequest{
+		NamaSales:   salesPeople.NamaSales,
+		Nip:         salesPeople.Nip,
+		NomerTelpon: salesPeople.NomerTelpon,
+		Bagian:      salesPeople.Bagian,
+	}
+
+	var resPurchaseForm = models.PurchaseFormInnerJoinResponse{
+		Id:                 purchaseForm.Id,
+		NamaLengkapPembeli: purchaseForm.NamaLengkapPembeli,
+		NomerKTP:           purchaseForm.NomerKTP,
+		AlamatRumah:        purchaseForm.AlamatRumah,
+		NomerDebit:         purchaseForm.NomerDebit,
+		CarId:              purchaseForm.CarId,
+		CarDetail:          carRequest,
+		HarusInden:         purchaseForm.HarusInden,
+		LamaInden:          purchaseForm.LamaInden,
+		CustomPlat:         purchaseForm.CustomPlat,
+		TambahanKit:        purchaseForm.TambahanKit,
+		SalesPeopleId:      purchaseForm.SalesPeopleId,
+		SalesPeopleDetail:  salesPeopleRequest,
+	}
+
+	return resPurchaseForm
+}
+
+func ConvToPaymentResponse(payment models.Payment) models.PaymentResponse {
+	var paymentResoponse = models.PaymentResponse{
+		Id:             payment.Id,
+		BuktiTransfer:  payment.BuktiTransfer,
+		IsConfirm:      payment.IsConfirm,
+		PurchaseFormId: payment.PurchaseFormId,
+	}
+
+	return paymentResoponse
+}
+
+func DataConfirmPayment(payment models.PaymentRequest, findData models.Payment) models.PaymentResponse {
+	var newConfirmPaymentResponse = models.PaymentResponse{
+		Id:             findData.Id,
+		BuktiTransfer:  findData.BuktiTransfer,
+		IsConfirm:      payment.IsConfirm,
+		PurchaseFormId: findData.PurchaseFormId,
+	}
+
+	return newConfirmPaymentResponse
 }

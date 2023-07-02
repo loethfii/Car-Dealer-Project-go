@@ -23,7 +23,11 @@ func main() {
 
 	purchaseFormRepository := repository.NewPurchaseFormRepository(db)
 	purchaseFormService := service.NewPurchaseFormService(purchaseFormRepository)
-	purchaseFormHandler := handler.NewPurchaseFormHandler(purchaseFormService)
+	purchaseFormHandler := handler.NewPurchaseFormHandler(purchaseFormService, carService, salesPeopleService)
+
+	paymentRepository := repository.NewPaymentRepository(db)
+	paymentService := service.NewPaymentService(paymentRepository)
+	paymentHandler := handler.NewPaymentHandler(paymentService)
 
 	r := gin.Default()
 
@@ -44,6 +48,13 @@ func main() {
 	r.POST("/purchase-forms/post", purchaseFormHandler.PostPurchaseForm)
 	r.PUT("/purchase-forms/put/:id", purchaseFormHandler.PutPurchaseForm)
 	r.DELETE("/purchase-forms/delete/:id", purchaseFormHandler.DeletePurchaseForm)
+
+	r.GET("/payments", paymentHandler.GetPayments)
+	r.GET("/payments/:id", paymentHandler.GetPaymentsId)
+	r.POST("/payments/post", paymentHandler.PostPayment)
+	r.PUT("/payments/put/:id", paymentHandler.PutPayment)
+	r.DELETE("/payments/delete/:id", paymentHandler.DeletePayment)
+	r.PATCH("/payments/confirm/:id", paymentHandler.ConfirmPayment)
 
 	r.Run()
 }

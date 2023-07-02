@@ -9,14 +9,14 @@ type SalesPeople struct {
 	Nip           string         `gorm:"column:nip; type: varchar(50); not null; " json:"nip"`
 	NomerTelpon   string         `gorm:"column:nomer_telpon; type: varchar(50); not null; " json:"nomer_telpon"`
 	Bagian        string         `gorm:"column:bagian; type: varchar(50); not null; " json:"bagian"`
-	PurchaseForms []PurchaseForm `json:"purchase_form" gorm:"foreignKey:SalesPeopleId"`
+	PurchaseForms []PurchaseForm `gorm:"foreignKey:SalesPeopleId" json:"purchase_form"`
 }
 
 type SalesPeopleRequest struct {
-	NamaSales   string `json:"nama_sales"`
-	Nip         string `json:"nip"`
-	NomerTelpon string `json:"nomer_telpon"`
-	Bagian      string `json:"bagian"`
+	NamaSales   string `json:"nama_sales" binding:"required"`
+	Nip         string `json:"nip" binding:"required"`
+	NomerTelpon string `json:"nomer_telpon" binding:"required"`
+	Bagian      string `json:"bagian" binding:"required"`
 }
 
 type SalesPeopleResponse struct {
