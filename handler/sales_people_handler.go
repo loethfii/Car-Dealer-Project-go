@@ -19,7 +19,10 @@ func SalesPeopleHandler(salesPeopleService service.SalesPeopleService) *salesPeo
 
 func (h *salesPeopleHandler) GetSalesPeople(c *gin.Context) {
 	salesPeoples, err := h.salesPeopleService.FindAll()
-	helper.Error(err)
+	if err != nil {
+		helper.StatusNotFound(c, err.Error())
+		return
+	}
 	newSalesPeople := []models.SalesPeopleResponse{}
 	for _, val := range salesPeoples {
 		data := helper.ConvertToResponseSalesPeople(val)
@@ -81,7 +84,7 @@ func (h *salesPeopleHandler) PutSalesPeople(c *gin.Context) {
 
 	salesPople, err := h.salesPeopleService.Update(id, newSalesPeople)
 	if err != nil {
-		helper.StatusServalInternalError(c, err.Error())
+		helper.StatusNotFound(c, err.Error())
 		return
 	}
 
@@ -94,7 +97,7 @@ func (h *salesPeopleHandler) DeleteSalesPeople(c *gin.Context) {
 
 	salesPeople, err := h.salesPeopleService.Delete(id)
 	if err != nil {
-		helper.StatusBadRequest(c, err.Error())
+		helper.StatusNotFound(c, "Tidak dapat menghapus, data tidak ditemukan!")
 		return
 	}
 

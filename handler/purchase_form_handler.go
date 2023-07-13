@@ -20,23 +20,7 @@ func NewPurchaseFormHandler(purchaseFormService service.PurchaseFormService, car
 }
 
 func (h *purchaseFormHandler) GetPurchaseForm(c *gin.Context) {
-	purchaseForms, carId, err := h.purchaseFormService.FindAll()
-	if err != nil {
-		if err != nil {
-			helper.StatusServalInternalError(c, "Terjadi kesalahan internal server.")
-			return
-		}
-	}
-
-	car, err := h.carService.FindById(carId)
-	if err != nil {
-		if err != nil {
-			helper.StatusServalInternalError(c, "Terjadi kesalahan internal server.")
-			return
-		}
-	}
-
-	salesPeople, err := h.salesPeopleService.FindById(3)
+	purchaseForms, err := h.purchaseFormService.FindAll()
 	if err != nil {
 		if err != nil {
 			helper.StatusServalInternalError(c, "Terjadi kesalahan internal server.")
@@ -46,7 +30,12 @@ func (h *purchaseFormHandler) GetPurchaseForm(c *gin.Context) {
 
 	newPurchaseFormRes := []models.PurchaseFormInnerJoinResponse{}
 	for _, val := range purchaseForms {
-		data := helper.ConvertToResponseAndInnerJoin(val, car, salesPeople)
+		car, _ := h.carService.FindById(val.CarId)
+		salesPeople, _ := h.salesPeopleService.FindById(val.SalesPeopleId)
+
+		//data := models.PurchaseFormInnerJoinResponse{}
+
+		data := helper.ConvertFromPurchaseFormToPurchaseFormResponse(val, car, salesPeople)
 
 		newPurchaseFormRes = append(newPurchaseFormRes, data)
 	}
@@ -61,15 +50,33 @@ func (h *purchaseFormHandler) GetPurchaseForm(c *gin.Context) {
 func (h *purchaseFormHandler) GetPurchaseFormById(c *gin.Context) {
 	stringId := c.Param("id")
 	id, _ := strconv.Atoi(stringId)
-	purchaseForm, err := h.purchaseFormService.FindById(id)
+	purchaseForm, carId, salesPeopleId, err := h.purchaseFormService.FindById(id)
 	if err != nil {
 		helper.StatusNotFound(c, "Data tidak ditemukan")
 		return
 	}
 
+	car, err := h.carService.FindById(carId)
+	if err != nil {
+		if err != nil {
+			helper.StatusServalInternalError(c, "Terjadi kesalahan internal server.")
+			return
+		}
+	}
+
+	salesPeople, err := h.salesPeopleService.FindById(salesPeopleId)
+	if err != nil {
+		if err != nil {
+			helper.StatusServalInternalError(c, "Terjadi kesalahan internal server.")
+			return
+		}
+	}
+
 	message := fmt.Sprintf("Data ditemukan")
 
-	helper.StatusOk(c, helper.ConvertToReponsePurchaseForm(purchaseForm), message)
+	//helper.StatusOk(c, helper.ConvertToReponsePurchaseForm(purchaseForm), message)
+	helper.StatusOk(c, helper.ConvertFromPurchaseFormToPurchaseFormResponse(purchaseForm, car, salesPeople), message)
+
 }
 
 func (h *purchaseFormHandler) PostPurchaseForm(c *gin.Context) {
@@ -82,7 +89,7 @@ func (h *purchaseFormHandler) PostPurchaseForm(c *gin.Context) {
 
 	purchaseForm, err := h.purchaseFormService.Create(newPuchaseForm)
 	if err != nil {
-		helper.StatusBadRequest(c, err.Error())
+		helper.StatusNotFound(c, err.Error())
 		return
 	}
 
@@ -104,7 +111,7 @@ func (h *purchaseFormHandler) PutPurchaseForm(c *gin.Context) {
 
 	purchaseForm, err := h.purchaseFormService.Update(id, newPurchaseForm)
 	if err != nil {
-		helper.StatusServalInternalError(c, err.Error())
+		helper.StatusNotFound(c, err.Error())
 		return
 	}
 
@@ -118,9 +125,67 @@ func (h *purchaseFormHandler) DeletePurchaseForm(c *gin.Context) {
 
 	purchaseForm, err := h.purchaseFormService.Delete(id)
 	if err != nil {
-		helper.StatusBadRequest(c, err.Error())
+		helper.StatusNotFound(c, "Tidak dapat menghapus, data tidak ditemukan")
 		return
 	}
 
 	helper.StatusOk(c, helper.ConvertToReponsePurchaseForm(purchaseForm), "Data Berhasil dihapus.")
+}
+
+func (h *purchaseFormHandler) PurchaseFormFindSalesPepleID(c *gin.Context) {
+	stringId := c.Param("id")
+	id, _ := strconv.Atoi(stringId)
+
+	purchaseFormsFindSalesPeopleID, err := h.purchaseFormService.FindBySalesPeopleID(id)
+	if err != nil {
+		helper.StatusNotFound(c, err.Error())
+		return
+
+	}
+
+	newPurchaseFormRes := []models.PurchaseFormInnerJoinResponse{}
+
+	for _, val := range purchaseFormsFindSalesPeopleID {
+		car, _ := h.carService.FindById(val.CarId)
+		salesPeople, _ := h.salesPeopleService.FindById(val.SalesPeopleId)
+
+		data := helper.ConvertFromPurchaseFormToPurchaseFormResponse(val, car, salesPeople)
+
+		newPurchaseFormRes = append(newPurchaseFormRes, data)
+	}
+
+	length := len(newPurchaseFormRes)
+
+	message := fmt.Sprintf("%d Data ditemukan", length)
+
+	helper.StatusOk(c, newPurchaseFormRes, message)
+
+}
+
+func (h *purchaseFormHandler) PurchaseFormFindCarID(c *gin.Context) {
+	stringId := c.Param("id")
+	id, _ := strconv.Atoi(stringId)
+
+	purchaseFormsFindSalesPeopleID, err := h.purchaseFormService.FindByCarID(id)
+	if err != nil {
+		helper.StatusNotFound(c, err.Error())
+		return
+	}
+
+	newPurchaseFormRes := []models.PurchaseFormInnerJoinResponse{}
+
+	for _, val := range purchaseFormsFindSalesPeopleID {
+		car, _ := h.carService.FindById(val.CarId)
+		salesPeople, _ := h.salesPeopleService.FindById(val.SalesPeopleId)
+
+		data := helper.ConvertFromPurchaseFormToPurchaseFormResponse(val, car, salesPeople)
+
+		newPurchaseFormRes = append(newPurchaseFormRes, data)
+	}
+
+	length := len(newPurchaseFormRes)
+
+	message := fmt.Sprintf("%d Data ditemukan", length)
+
+	helper.StatusOk(c, newPurchaseFormRes, message)
 }

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"gorm.io/gorm"
 	"tugas_akhir_course_net/models"
 )
@@ -53,7 +54,13 @@ func (r *carRepository) Create(car models.Car) (models.Car, error) {
 
 func (r *carRepository) Update(id int, updateCar models.CarRequest) (models.CarRequest, error) {
 
-	err := r.db.Model(&models.Car{}).Where("id = ?", id).Updates(&updateCar).Error
+	var err error
+
+	result := r.db.Model(&models.Car{}).Where("id = ?", id).Updates(&updateCar)
+
+	if result.RowsAffected == 0 {
+		err = errors.New("Gagal update, data tidak ditemukan!	")
+	}
 
 	return updateCar, err
 }

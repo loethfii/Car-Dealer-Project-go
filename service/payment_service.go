@@ -6,7 +6,7 @@ import (
 )
 
 type PaymentService interface {
-	FindAll() ([]models.Payment, error)
+	FindAll() ([]models.Payment, int, error)
 	FindById(id int) (models.Payment, error)
 	Create(payment models.PaymentRequest) (models.Payment, error)
 	Update(id int, updatePayment models.PaymentRequest) (models.PaymentRequest, error)
@@ -22,9 +22,9 @@ func NewPaymentService(paymentRepo repository.PaymentRepository) *paymentService
 	return &paymentService{paymentRepo}
 }
 
-func (s *paymentService) FindAll() ([]models.Payment, error) {
-	payments, err := s.paymentRepository.FindAll()
-	return payments, err
+func (s *paymentService) FindAll() ([]models.Payment, int, error) {
+	payments, purchaseFormId, err := s.paymentRepository.FindAll()
+	return payments, purchaseFormId, err
 }
 
 func (s *paymentService) FindById(id int) (models.Payment, error) {

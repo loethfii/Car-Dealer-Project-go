@@ -19,8 +19,20 @@ type PaymentRequest struct {
 }
 
 type PaymentResponse struct {
-	Id             int
+	Id             int    `json:"id"`
 	BuktiTransfer  string `json:"bukti_transfer" form:"bukti_transfer"`
 	IsConfirm      bool   `json:"is_confirm" form:"bukti_transfer"`
 	PurchaseFormId int    `json:"purchase_form_id" form:"purchase_form_id"`
+}
+
+type UploadImage struct {
+	BuktiTransfer string `gorm:"column:bukti_transfer; type: varbinary(100);" json:"bukti_transfer"`
+}
+
+type PaymentInnerJoinPurchaseForm struct {
+	Id             int    `json:"id"`
+	BuktiTransfer  string `json:"bukti_transfer" form:"bukti_transfer"`
+	IsConfirm      bool   `json:"is_confirm" form:"bukti_transfer"`
+	PurchaseFormId int    `json:"purchase_form_id" form:"purchase_form_id"`
+	Purchaseforms  PurchaseFormResponse
 }

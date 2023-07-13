@@ -12,7 +12,7 @@ type Car struct {
 	Isi_Silinder  string         `gorm:"column:isi_Silinder;type: varchar(100); " json:"isi_Silinder"`
 	Warna         string         `gorm:"column:warna;type: varchar(100); " json:"warna"`
 	Transmisi     string         `gorm:"column:transmisi;type: varchar(100); " json:"transmisi"`
-	Harga         uint32         `gorm:"column:harga;type: int; " json:"harga"`
+	Harga         uint64         `gorm:"column:harga;type: int; " json:"harga"`
 	Qty           uint32         `gorm:"column:qty;type: int; " json:"qty"`
 	PurchaseForms []PurchaseForm `gorm:"foreignKey:CarId"`
 }
@@ -26,7 +26,7 @@ type CarResponse struct {
 	Isi_Silinder  string `json:"isi_Silinder"`
 	Warna         string `json:"warna"`
 	Transmisi     string `json:"transmisi"`
-	Harga         uint32 `json:"harga"`
+	Harga         uint64 `json:"harga"`
 	Qty           uint32 `json:"qty"`
 	PurchaseForms []PurchaseFormResponse
 }
@@ -39,6 +39,19 @@ type CarRequest struct {
 	Isi_Silinder string `json:"isi_Silinder" binding:"required"`
 	Warna        string `json:"warna" binding:"required"`
 	Transmisi    string `json:"transmisi" binding:"required"`
-	Harga        uint32 `json:"harga" binding:"required"`
+	Harga        uint64 `json:"harga" binding:"required"`
 	Qty          uint32 `json:"qty" binding:"required"`
+}
+
+type CarResponseToPurchaseForm struct {
+	Id           int    `json:"id"`
+	NamaMobil    string `json:"nama_mobil"`
+	TipeMobil    string `json:"tipe_mobil"`
+	JenisMobil   string `json:"jenis_mobil"`
+	BahanBakar   string `json:"bahan_bakar"`
+	Isi_Silinder string `json:"isi_Silinder"`
+	Warna        string `json:"warna"`
+	Transmisi    string `json:"transmisi"`
+	Harga        uint64 `json:"harga"`
+	Qty          uint32 `json:"qty"`
 }
