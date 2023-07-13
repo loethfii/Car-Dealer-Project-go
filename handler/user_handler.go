@@ -27,6 +27,10 @@ func (h *userHandler) RegisterUser(c *gin.Context) {
 	}
 
 	user, err := h.userService.RegisterUser(reqUser)
+	if err != nil {
+		helper.StatusBadRequest(c, err.Error())
+		return
+	}
 
 	helper.StatusCreated(c, user, "Register Berhasil")
 }
