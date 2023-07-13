@@ -22,7 +22,26 @@ func NewUserRepository(db *gorm.DB) *userRepository {
 }
 
 func (r *userRepository) RegisterUser(user models.User) (models.User, error) {
-	err := r.db.Create(&user).Error
+
+	var err error
+
+	var existingUser models.User
+	err = r.db.Where("username = ?", user.Username).First(&existingUser).Error
+	if err != nil {
+		err = errors.New("username sudah tersedia!")
+	}
+
+	err = r.db.Where("email = ?", user.Email).First(&existingUser).Error
+	if err != nil {
+		err = errors.New("email sudah tersedia!")
+	}
+
+	err = r.db.Where("username = ? AND email = ?", user.Username, user.Email).First(&existingUser).Error
+	if err != nil {
+		err = errors.New("username dan email sudah tersedia!")
+	}
+
+	err = r.db.Create(&user).Error
 
 	return user, err
 }
