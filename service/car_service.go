@@ -43,18 +43,20 @@ func (s *carService) Create(car models.CarRequest) (models.Car, error) {
 		Harga:        car.Harga,
 		Qty:          car.Qty,
 	}
-
+	
 	newCar, err := s.carRepo.Create(newCar)
 	return newCar, err
 }
 
 func (s *carService) Update(id int, updateCar models.CarRequest) (models.CarRequest, error) {
-	updateCar, err := s.carRepo.Update(id, updateCar)
+	var err error
+	updateCar, err = s.carRepo.Update(id, updateCar)
+	
 	return updateCar, err
 }
 
 func (s *carService) Delete(id int) (models.Car, error) {
 	car, err := s.carRepo.Delete(id)
-
+	
 	return car, err
 }

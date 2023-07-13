@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"tugas_akhir_course_net/config"
 	"tugas_akhir_course_net/handler"
 	"tugas_akhir_course_net/helper"
+	"tugas_akhir_course_net/middlewares"
 	"tugas_akhir_course_net/repository"
 	"tugas_akhir_course_net/service"
 )
@@ -27,34 +29,63 @@ func main() {
 
 	paymentRepository := repository.NewPaymentRepository(db)
 	paymentService := service.NewPaymentService(paymentRepository)
-	paymentHandler := handler.NewPaymentHandler(paymentService)
+	paymentHandler := handler.NewPaymentHandler(paymentService, purchaseFormService)
+
+	userRepository := repository.NewUserRepository(db)
+	userService := service.NewUserService(userRepository)
+	userHandler := handler.NewUserHandler(userService)
+
+	fmt.Println(userService)
 
 	r := gin.Default()
 
-	r.GET("/cars", carHandler.GetCars)
-	r.GET("/cars/:id", carHandler.GetCarsById)
-	r.POST("/cars/post", carHandler.PostCars)
-	r.PUT("/cars/put/:id", carHandler.PutCars)
-	r.DELETE("/cars/delete/:id", carHandler.DeleteCars)
+	v1 := r.Group("api/v1")
+	{
+		var car = v1.Group("/car")
+		{
+			car.GET("/", middlewares.Auth(), carHandler.GetCars)
+			car.GET("/:id", middlewares.Auth(), carHandler.GetCarsById)
+			car.POST("/post", middlewares.ManagerAndStaffSales(), carHandler.PostCars)
+			car.PUT("/put/:id", middlewares.ManagerAndStaffSales(), carHandler.PutCars)
+			car.DELETE("/delete/:id", middlewares.ManagerSales(), carHandler.DeleteCars)
+		}
 
-	r.GET("/sales", salesPeopleHandler.GetSalesPeople)
-	r.GET("/sales/:id", salesPeopleHandler.GetSalesPeopleById)
-	r.POST("/sales/post", salesPeopleHandler.PostSalesPeople)
-	r.PUT("/sales/put/:id", salesPeopleHandler.PutSalesPeople)
-	r.DELETE("/sales/delete/:id", salesPeopleHandler.DeleteSalesPeople)
+		var sales = v1.Group("/sales")
+		{
+			sales.GET("/", middlewares.ManagerAndStaffSales(), salesPeopleHandler.GetSalesPeople)
+			sales.GET("/:id", middlewares.ManagerAndStaffSales(), salesPeopleHandler.GetSalesPeopleById)
+			sales.POST("/post", middlewares.ManagerSales(), salesPeopleHandler.PostSalesPeople)
+			sales.PUT("/put/:id", middlewares.ManagerAndStaffSales(), salesPeopleHandler.PutSalesPeople)
+			sales.DELETE("/delete/:id", middlewares.ManagerSales(), salesPeopleHandler.DeleteSalesPeople)
+		}
 
-	r.GET("/purchase-forms", purchaseFormHandler.GetPurchaseForm)
-	r.GET("/purchase-forms/:id", purchaseFormHandler.GetPurchaseFormById)
-	r.POST("/purchase-forms/post", purchaseFormHandler.PostPurchaseForm)
-	r.PUT("/purchase-forms/put/:id", purchaseFormHandler.PutPurchaseForm)
-	r.DELETE("/purchase-forms/delete/:id", purchaseFormHandler.DeletePurchaseForm)
+		var purchaseForm = v1.Group("/purchase-form")
+		{
+			purchaseForm.GET("/", middlewares.ManagerAndStaffSales(), purchaseFormHandler.GetPurchaseForm)
+			purchaseForm.GET("/sales-people/:id", middlewares.ManagerAndStaffSales(), purchaseFormHandler.PurchaseFormFindSalesPepleID)
+			purchaseForm.GET("/car/:id", middlewares.ManagerAndStaffSales(), purchaseFormHandler.PurchaseFormFindCarID)
+			purchaseForm.GET("/:id", middlewares.ManagerAndStaffSales(), purchaseFormHandler.GetPurchaseFormById)
+			purchaseForm.POST("/post", middlewares.Auth(), purchaseFormHandler.PostPurchaseForm)
+			purchaseForm.PUT("/put/:id", middlewares.ManagerAndStaffSales(), purchaseFormHandler.PutPurchaseForm)
+			purchaseForm.DELETE("/delete/:id", middlewares.ManagerSales(), purchaseFormHandler.DeletePurchaseForm)
+		}
 
-	r.GET("/payments", paymentHandler.GetPayments)
-	r.GET("/payments/:id", paymentHandler.GetPaymentsId)
-	r.POST("/payments/post", paymentHandler.PostPayment)
-	r.PUT("/payments/put/:id", paymentHandler.PutPayment)
-	r.DELETE("/payments/delete/:id", paymentHandler.DeletePayment)
-	r.PATCH("/payments/confirm/:id", paymentHandler.ConfirmPayment)
+		var payment = v1.Group("/payment")
+		{
+			payment.GET("/", middlewares.ManagerAndStaffSales(), paymentHandler.GetPayments)
+			payment.GET("/:id", middlewares.ManagerAndStaffSales(), paymentHandler.GetPaymentsId)
+			payment.POST("/post", middlewares.User(), paymentHandler.PostPayment)
+			payment.PUT("/put/:id", middlewares.Auth(), paymentHandler.PutPayment)
+			payment.DELETE("/delete/:id", middlewares.ManagerSales(), paymentHandler.DeletePayment)
+			payment.PATCH("/confirm/:id", middlewares.ManagerSales(), paymentHandler.ConfirmPayment)
+		}
+
+		var user = v1.Group("/user")
+		{
+			user.POST("/register", userHandler.RegisterUser)
+			user.POST("/login", userHandler.GenerateToken)
+		}
+	}
 
 	r.Run()
 }

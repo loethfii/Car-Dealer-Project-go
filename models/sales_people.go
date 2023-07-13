@@ -27,3 +27,11 @@ type SalesPeopleResponse struct {
 	Bagian        string                 `json:"bagian"`
 	PurchaseForms []PurchaseFormResponse `json:"purchase_forms"`
 }
+
+type SalesPeopleResponseToPurchaseForm struct {
+	Id          int    `json:"id"`
+	NamaSales   string `json:"nama_sales"`
+	Nip         string `json:"nip"`
+	NomerTelpon string `json:"nomer_telpon"`
+	Bagian      string `json:"bagian"`
+}

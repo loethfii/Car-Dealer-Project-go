@@ -1,6 +1,9 @@
 package helper
 
 import (
+	"fmt"
+	"math/rand"
+	"path/filepath"
 	"tugas_akhir_course_net/models"
 )
 
@@ -10,6 +13,7 @@ func Error(err error) {
 	}
 }
 
+// konversi model car to response car
 func ConvertToResponseCar(car models.Car) models.CarResponse {
 	var purchaseFormResponses []models.PurchaseFormResponse
 
@@ -48,6 +52,7 @@ func ConvertToResponseCar(car models.Car) models.CarResponse {
 	return resCar
 }
 
+// konversi model car ke car request
 func ConvertToRequestCar(car models.Car) models.CarRequest {
 	var resCar = models.CarRequest{
 		NamaMobil:    car.NamaMobil,
@@ -64,6 +69,7 @@ func ConvertToRequestCar(car models.Car) models.CarRequest {
 	return resCar
 }
 
+// konversi model sales people ke salesPeopleResponse
 func ConvertToResponseSalesPeople(salesPeople models.SalesPeople) models.SalesPeopleResponse {
 	var purchaseFormResponses []models.PurchaseFormResponse
 
@@ -97,6 +103,7 @@ func ConvertToResponseSalesPeople(salesPeople models.SalesPeople) models.SalesPe
 	return resSalesPeople
 }
 
+// konversi model purchase ke purchase form response
 func ConvertToReponsePurchaseForm(purchaseForm models.PurchaseForm) models.PurchaseFormResponse {
 	var resPurchaseForm = models.PurchaseFormResponse{
 		Id:                 purchaseForm.Id,
@@ -115,8 +122,10 @@ func ConvertToReponsePurchaseForm(purchaseForm models.PurchaseForm) models.Purch
 	return resPurchaseForm
 }
 
-func ConvertToResponseAndInnerJoin(purchaseForm models.PurchaseForm, car models.Car, salesPeople models.SalesPeople) models.PurchaseFormInnerJoinResponse {
-	var carRequest = models.CarRequest{
+// konversi model purchase form ke inner join model car, sales people
+func ConvertFromPurchaseFormToPurchaseFormResponse(purchaseForm models.PurchaseForm, car models.Car, salesPeople models.SalesPeople) models.PurchaseFormInnerJoinResponse {
+	var carResponse = models.CarResponseToPurchaseForm{
+		Id:           car.Id,
 		NamaMobil:    car.NamaMobil,
 		TipeMobil:    car.TipeMobil,
 		JenisMobil:   car.JenisMobil,
@@ -128,7 +137,8 @@ func ConvertToResponseAndInnerJoin(purchaseForm models.PurchaseForm, car models.
 		Qty:          car.Qty,
 	}
 
-	var salesPeopleRequest = models.SalesPeopleRequest{
+	var salesPeopleResponse = models.SalesPeopleResponseToPurchaseForm{
+		Id:          salesPeople.Id,
 		NamaSales:   salesPeople.NamaSales,
 		Nip:         salesPeople.Nip,
 		NomerTelpon: salesPeople.NomerTelpon,
@@ -142,18 +152,22 @@ func ConvertToResponseAndInnerJoin(purchaseForm models.PurchaseForm, car models.
 		AlamatRumah:        purchaseForm.AlamatRumah,
 		NomerDebit:         purchaseForm.NomerDebit,
 		CarId:              purchaseForm.CarId,
-		CarDetail:          carRequest,
+		CarDetail:          carResponse,
 		HarusInden:         purchaseForm.HarusInden,
 		LamaInden:          purchaseForm.LamaInden,
 		CustomPlat:         purchaseForm.CustomPlat,
 		TambahanKit:        purchaseForm.TambahanKit,
 		SalesPeopleId:      purchaseForm.SalesPeopleId,
-		SalesPeopleDetail:  salesPeopleRequest,
+		SalesPeopleDetail:  salesPeopleResponse,
+		PaymentID:          purchaseForm.Payment.Id,
+		BuktiTransfer:      purchaseForm.Payment.BuktiTransfer,
+		IsConfirm:          purchaseForm.Payment.IsConfirm,
 	}
 
 	return resPurchaseForm
 }
 
+// konversi payment ke payment response
 func ConvToPaymentResponse(payment models.Payment) models.PaymentResponse {
 	var paymentResoponse = models.PaymentResponse{
 		Id:             payment.Id,
@@ -165,6 +179,33 @@ func ConvToPaymentResponse(payment models.Payment) models.PaymentResponse {
 	return paymentResoponse
 }
 
+// inner join
+func ConvToPaymentResponseInnerJoin(payment models.Payment, purchaseForm models.PurchaseForm) models.PaymentInnerJoinPurchaseForm {
+	purchaseFormResponse := models.PurchaseFormResponse{
+		Id:                 purchaseForm.Id,
+		NamaLengkapPembeli: purchaseForm.NamaLengkapPembeli,
+		NomerKTP:           purchaseForm.NomerKTP,
+		AlamatRumah:        purchaseForm.AlamatRumah,
+		NomerDebit:         purchaseForm.NomerDebit,
+		CarId:              purchaseForm.CarId,
+		HarusInden:         purchaseForm.HarusInden,
+		LamaInden:          purchaseForm.LamaInden,
+		CustomPlat:         purchaseForm.CustomPlat,
+		TambahanKit:        purchaseForm.TambahanKit,
+		SalesPeopleId:      purchaseForm.SalesPeopleId,
+	}
+	var paymentResoponse = models.PaymentInnerJoinPurchaseForm{
+		Id:             payment.Id,
+		BuktiTransfer:  payment.BuktiTransfer,
+		IsConfirm:      payment.IsConfirm,
+		PurchaseFormId: payment.PurchaseFormId,
+		Purchaseforms:  purchaseFormResponse,
+	}
+
+	return paymentResoponse
+}
+
+// konversi payment request ke payment response
 func DataConfirmPayment(payment models.PaymentRequest, findData models.Payment) models.PaymentResponse {
 	var newConfirmPaymentResponse = models.PaymentResponse{
 		Id:             findData.Id,
@@ -174,4 +215,21 @@ func DataConfirmPayment(payment models.PaymentRequest, findData models.Payment) 
 	}
 
 	return newConfirmPaymentResponse
+}
+
+// genete nama file
+func GenerateFilename(originalFilename string) string {
+	ext := filepath.Ext(originalFilename)
+	filename := fmt.Sprintf("%s%s", RandomString(10), ext)
+	return filename
+}
+
+// Fungsi untuk menghasilkan string acak dengan panjang tertentu
+func RandomString(n int) string {
+	const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }

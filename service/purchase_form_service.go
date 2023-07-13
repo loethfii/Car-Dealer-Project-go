@@ -6,11 +6,13 @@ import (
 )
 
 type PurchaseFormService interface {
-	FindAll() ([]models.PurchaseForm, int, error)
-	FindById(id int) (models.PurchaseForm, error)
+	FindAll() ([]models.PurchaseForm, error)
+	FindById(id int) (models.PurchaseForm, int, int, error)
 	Create(car models.PurchaseFormRequest) (models.PurchaseForm, error)
 	Update(id int, updateCar models.PurchaseFormRequest) (models.PurchaseFormRequest, error)
 	Delete(id int) (models.PurchaseForm, error)
+	FindBySalesPeopleID(id int) ([]models.PurchaseForm, error)
+	FindByCarID(id int) ([]models.PurchaseForm, error)
 }
 
 type purchaseFormService struct {
@@ -21,14 +23,14 @@ func NewPurchaseFormService(purchaseFormRepository repository.PurchaseFormReposi
 	return &purchaseFormService{purchaseFormRepository}
 }
 
-func (s *purchaseFormService) FindAll() ([]models.PurchaseForm, int, error) {
-	purchaseForms, carId, err := s.purchaseFormRepository.FindAll()
-	return purchaseForms, carId, err
+func (s *purchaseFormService) FindAll() ([]models.PurchaseForm, error) {
+	purchaseForms, err := s.purchaseFormRepository.FindAll()
+	return purchaseForms, err
 }
 
-func (s *purchaseFormService) FindById(id int) (models.PurchaseForm, error) {
-	purchaseForm, err := s.purchaseFormRepository.FindById(id)
-	return purchaseForm, err
+func (s *purchaseFormService) FindById(id int) (models.PurchaseForm, int, int, error) {
+	purchaseForm, carId, salesPeopleId, err := s.purchaseFormRepository.FindById(id)
+	return purchaseForm, carId, salesPeopleId, err
 }
 
 func (s *purchaseFormService) Create(puchaseForm models.PurchaseFormRequest) (models.PurchaseForm, error) {
@@ -45,7 +47,7 @@ func (s *purchaseFormService) Create(puchaseForm models.PurchaseFormRequest) (mo
 		SalesPeopleId:      puchaseForm.SalesPeopleId,
 	}
 
-	purchaseForm, err := s.purchaseFormRepository.Create(newPurchaseForm, puchaseForm.CarId, puchaseForm.HarusInden)
+	purchaseForm, err := s.purchaseFormRepository.Create(newPurchaseForm, puchaseForm.CarId, puchaseForm.SalesPeopleId, puchaseForm.HarusInden)
 	return purchaseForm, err
 }
 
@@ -58,4 +60,15 @@ func (s *purchaseFormService) Delete(id int) (models.PurchaseForm, error) {
 	car, err := s.purchaseFormRepository.Delete(id)
 
 	return car, err
+}
+
+func (s *purchaseFormService) FindBySalesPeopleID(id int) ([]models.PurchaseForm, error) {
+	purchaseForm, err := s.purchaseFormRepository.FindBySalesPeopleID(id)
+
+	return purchaseForm, err
+}
+
+func (s *purchaseFormService) FindByCarID(id int) ([]models.PurchaseForm, error) {
+	purchaseForm, err := s.purchaseFormRepository.FindByCarID(id)
+	return purchaseForm, err
 }

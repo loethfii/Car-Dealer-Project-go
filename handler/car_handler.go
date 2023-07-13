@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"strconv"
 	"tugas_akhir_course_net/helper"
 	"tugas_akhir_course_net/models"
@@ -85,11 +86,15 @@ func (h *carHandler) PutCars(c *gin.Context) {
 
 	car, err := h.carService.Update(id, newCar)
 	if err != nil {
-		helper.StatusServalInternalError(c, err.Error())
+		helper.StatusNotFound(c, err.Error())
 		return
 	}
 
-	helper.StatusOk(c, car, "Berhasil update")
+	fmt.Sprintln(car)
+
+	c.JSON(http.StatusOK, gin.H{
+		"Message": "berhasil update",
+	})
 }
 
 func (h *carHandler) DeleteCars(c *gin.Context) {
@@ -99,7 +104,7 @@ func (h *carHandler) DeleteCars(c *gin.Context) {
 
 	car, err := h.carService.Delete(id)
 	if err != nil {
-		helper.StatusBadRequest(c, err.Error())
+		helper.StatusNotFound(c, "Tidak dapat menghapus, data tidak ditemukan!")
 		return
 	}
 
