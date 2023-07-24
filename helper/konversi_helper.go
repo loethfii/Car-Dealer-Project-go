@@ -92,7 +92,7 @@ func ConvertToResponseSalesPeople(salesPeople models.SalesPeople) models.SalesPe
 	}
 
 	var resSalesPeople = models.SalesPeopleResponse{
-		Id:            salesPeople.Id,
+		Id:            salesPeople.ID,
 		NamaSales:     salesPeople.NamaSales,
 		Nip:           salesPeople.Nip,
 		NomerTelpon:   salesPeople.NomerTelpon,
@@ -138,7 +138,7 @@ func ConvertFromPurchaseFormToPurchaseFormResponse(purchaseForm models.PurchaseF
 	}
 
 	var salesPeopleResponse = models.SalesPeopleResponseToPurchaseForm{
-		Id:          salesPeople.Id,
+		Id:          salesPeople.ID,
 		NamaSales:   salesPeople.NamaSales,
 		Nip:         salesPeople.Nip,
 		NomerTelpon: salesPeople.NomerTelpon,

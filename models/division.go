@@ -4,9 +4,10 @@ import "gorm.io/gorm"
 
 type Division struct {
 	gorm.Model
-	NameDivision string `gorm:"column:name_division; type: varchar(100);" json:"name_division"`
-	Code         string `gorm:"column:code; type: varchar(100);" json:"code"`
-	DepartmentID uint   `gorm:"column:department_id; type: int;" json:"department_id"`
+	NameDivision string        `gorm:"column:name_division; type: varchar(100);" json:"name_division"`
+	Code         string        `gorm:"column:code; type: varchar(100);" json:"code"`
+	DepartmentID uint          `gorm:"column:department_id; type: uint;" json:"department_id"`
+	SalesPeoples []SalesPeople `json:"sales_people"`
 }
 
 type DivisionRequest struct {

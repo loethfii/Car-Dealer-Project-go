@@ -9,7 +9,8 @@ type SalesPeople struct {
 	Nip           string         `gorm:"column:nip; type: varchar(50); not null; " json:"nip"`
 	NomerTelpon   string         `gorm:"column:nomer_telpon; type: varchar(50); not null; " json:"nomer_telpon"`
 	Bagian        string         `gorm:"column:bagian; type: varchar(50); not null; " json:"bagian"`
-	PurchaseForms []PurchaseForm `gorm:"foreignKey:SalesPeopleId" json:"purchase_form"`
+	PurchaseForms []PurchaseForm `json:"purchase_form"`
+	DivisionID    uint           `gorm:"column:division_id; type:uint;" json:"division_id"`
 }
 
 type SalesPeopleRequest struct {
@@ -17,19 +18,21 @@ type SalesPeopleRequest struct {
 	Nip         string `json:"nip" binding:"required"`
 	NomerTelpon string `json:"nomer_telpon" binding:"required"`
 	Bagian      string `json:"bagian" binding:"required"`
+	DivisionID  uint   `json:"division_id"`
 }
 
 type SalesPeopleResponse struct {
-	Id            int                    `json:"id"`
+	Id            uint                   `json:"id"`
 	NamaSales     string                 `json:"nama_sales"`
 	Nip           string                 `json:"nip"`
 	NomerTelpon   string                 `json:"nomer_telpon"`
 	Bagian        string                 `json:"bagian"`
 	PurchaseForms []PurchaseFormResponse `json:"purchase_forms"`
+	DivisionID    uint                   `json:"division_id"`
 }
 
 type SalesPeopleResponseToPurchaseForm struct {
-	Id          int    `json:"id"`
+	Id          uint   `json:"id"`
 	NamaSales   string `json:"nama_sales"`
 	Nip         string `json:"nip"`
 	NomerTelpon string `json:"nomer_telpon"`
