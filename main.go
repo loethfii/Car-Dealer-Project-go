@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"tugas_akhir_course_net/config"
 	"tugas_akhir_course_net/handler"
@@ -35,7 +34,13 @@ func main() {
 	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
 
-	fmt.Println(userService)
+	departmentRepository := repository.NewDepartmentRepository(db)
+	departmentService := service.NewDepartmentService(departmentRepository)
+	departmentHandler := handler.NewDepartmentHandler(departmentService)
+
+	divisionRepository := repository.NewDivisionRepository(db)
+	divisionService := service.NewDivisonService(divisionRepository)
+	divisonHandler := handler.NewDivisionHandler(divisionService)
 
 	r := gin.Default()
 
@@ -78,6 +83,20 @@ func main() {
 			payment.PUT("/put/:id", middlewares.Auth(), paymentHandler.PutPayment)
 			payment.DELETE("/delete/:id", middlewares.ManagerSales(), paymentHandler.DeletePayment)
 			payment.PATCH("/confirm/:id", middlewares.ManagerSales(), paymentHandler.ConfirmPayment)
+		}
+
+		var department = v1.Group("/department")
+		{
+			department.GET("/", departmentHandler.GetDepartments)
+			department.POST("/post", departmentHandler.PostDepartment)
+			department.GET("/:id", departmentHandler.GetDepartmentByID)
+		}
+
+		var division = v1.Group("/division")
+		{
+			division.GET("/", divisonHandler.GetDevisions)
+			division.POST("/post", divisonHandler.CreateDivision)
+
 		}
 
 		var user = v1.Group("/user")
