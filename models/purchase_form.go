@@ -14,7 +14,7 @@ type PurchaseForm struct {
 	LamaInden          string  `gorm:"column:lama_inden; type: varchar(100); " json:"lama_inden"`
 	CustomPlat         string  `gorm:"column:custom_plat; type: varchar(100); " json:"custom_plat"`
 	TambahanKit        string  `gorm:"column:tambahan_kit; type: varchar(100); " json:"tambahan_kit"`
-	SalesPeopleId      int     `gorm:"column:sales_people_id;type: int; " json:"sales_people_id"`
+	SalesPeopleId      int     `gorm:"column:sales_people_id;type: uint; " json:"sales_people_id"`
 	Payment            Payment `gorm:"foreignKey:PurchaseFormId;"`
 }
 
