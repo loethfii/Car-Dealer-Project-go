@@ -99,7 +99,7 @@ func (r *purchaseFormRepository) FindBySalesPeopleID(id int) ([]models.PurchaseF
 	if result.RowsAffected == 0 {
 		err = errors.New("data tidak ditemukan")
 	}
-
+	//
 	return purchaseForm, err
 }
 
